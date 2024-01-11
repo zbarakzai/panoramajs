@@ -1,14 +1,14 @@
 import React from 'react';
-import {EpicScroll, useEpicScroll} from './index';
+import {Panorama, usePanorama} from './index';
 
 import './style.css';
 
 export default {
-  component: EpicScroll,
+  component: Panorama,
 };
 
 export function Default() {
-  const {next, scrollToIndex} = useEpicScroll();
+  const {next, scrollToIndex} = usePanorama();
 
   return (
     <div>
@@ -38,7 +38,7 @@ export function Default() {
       >
         ToIndex 3
       </button>
-      <EpicScroll>
+      <Panorama>
         <section data-anchor="Page 2">
           <div className="text">Page 2</div>
         </section>
@@ -54,7 +54,7 @@ export function Default() {
         <section data-anchor="Page 6">
           <div className="text">Page 6</div>
         </section>
-      </EpicScroll>
+      </Panorama>
     </div>
   );
 }
@@ -62,7 +62,7 @@ export function Default() {
 export function InterVal() {
   return (
     <div>
-      <EpicScroll>
+      <Panorama>
         <section data-anchor="Page 2">
           <div className="text">Page 2</div>
         </section>
@@ -78,7 +78,7 @@ export function InterVal() {
         <section data-anchor="Page 6">
           <div className="text">Page 6</div>
         </section>
-      </EpicScroll>
+      </Panorama>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 {
   "name": "panoramajs",
-  "version": "0.0.7",
+  "version": "0.4.0",
   "description": "Creating captivating fullscreen snap scrolling, single-page websites with elegant landscape sliders for a seamless, immersive, and visually stunning online experience.",
   "scripts": {
     "build": "run-s clean build:types build:js",
@@ -88,7 +88,7 @@
     "react-dom": "^18.2.0"
   },
   "engines": {
-    "node": "^16.0.0"
+    "node": ">=16.0.0"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

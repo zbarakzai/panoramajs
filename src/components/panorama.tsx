@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react';
-import EpicScrollManager from '../utils/scroll-manager';
+import EpicScrollManager from '../utils/panorama-manager';
+import {useMediaQuery} from '../utils/useMediaQuery';
 
-export interface EpicScrollProps {
+export interface PanoramaProps {
   /** CSS3 selector string for the pages */
   childSelector?: string;
   /** The duration in ms of the scroll animation */
@@ -18,9 +19,17 @@ export interface EpicScrollProps {
   freeScroll?: boolean;
   /** Enable infinite scrolling */
   infinite?: boolean;
+  /** Activates the responsive mode of the page. When set, scroll snap is disabled and contents are responsive on the page. */
+  responsiveAt?: 'small' | 'medium' | 'large' | 'xLarge';
+  /** Define the page anchors */
+  anchors?: string[];
+  /** Represents the child components or elements to be rendered inside this component. */
+  children: React.ReactNode;
   /** Enable slideshow that cycles through your pages automatically */
   slideshow?: SlideshowConfig;
+  /**  Configuration object for enabling or disabling various event-driven features. */
   events?: EventsConfig;
+  /** Specifies the easing function to be used for transitions and animations. */
   easing?: EasingFunction;
   /** Called when the component is initialized, with initial slide data */
   onInit?: (data: SlideData) => void;
@@ -34,9 +43,6 @@ export interface EpicScrollProps {
   onScroll?: (data: SlideData, type?: string) => void;
   /** Called when the scroll action finishes, with the final slide data */
   onFinish?: (data: SlideData) => void;
-  /** Define the page anchors */
-  anchors?: string[];
-  children: React.ReactNode;
 }
 
 export type SlideData = {
@@ -49,7 +55,7 @@ export type SlideData = {
   /** Maximum scrollable distance in pixels */
   max: number;
   /** Show the movement direction */
-  slideDirection: 'slide-up' | 'slide-down';
+  slideDirection: 'up' | 'down';
   currentPage: HTMLElement;
   upcomingPage: HTMLElement;
 };
@@ -83,17 +89,24 @@ type EventsConfig = {
   keydown: boolean;
 };
 
-export function EpicScroll(props: EpicScrollProps) {
+export function Panorama(props: PanoramaProps) {
+  const match = useMediaQuery(props.responsiveAt);
+
   useEffect(() => {
     EpicScrollManager.initialize({...props});
-
     const instance = EpicScrollManager.getInstance();
+
+    if (match && props.responsiveAt) {
+      instance?.setResponsive(true);
+    } else {
+      instance?.setResponsive(false);
+    }
 
     return () => {
       instance?.destroy();
       EpicScrollManager.destroy();
     };
-  }, []);
+  }, [match]);
 
   return <main>{props.children}</main>;
 }

@@ -1,4 +1,4 @@
-import {EpicScroll} from './scroll';
+import {Panorama} from './scroll';
 
 type SlideShowConfig = {
   delay?: number;
@@ -8,11 +8,11 @@ type SlideShowConfig = {
 };
 
 export class SlideShow {
-  private instance: EpicScroll;
+  private instance: Panorama;
   private running: boolean;
   private config: SlideShowConfig;
 
-  constructor(instance: EpicScroll) {
+  constructor(instance: Panorama) {
     this.instance = instance;
     this.running = false;
     this.config = this.instance.config.slideshow as SlideShowConfig;

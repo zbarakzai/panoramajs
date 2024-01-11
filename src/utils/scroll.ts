@@ -27,7 +27,7 @@
  */
 
 import {SlideShow} from './slide';
-import {EpicScrollProps} from '../components/epicscroll';
+import {PanoramaProps} from '../components/panorama';
 
 type CssStyleObject = Partial<CSSStyleDeclaration> &
   Record<string, string | null>;
@@ -40,9 +40,9 @@ interface ContainerType extends HTMLElement {
 
 type SizeType = 'width' | 'height';
 
-export class EpicScroll {
+export class Panorama {
   private container?: ContainerType | null;
-  public config!: EpicScrollProps;
+  public config!: PanoramaProps;
   private events!: {[key: string]: boolean};
   public pages!: HTMLElement[];
   private horizontal!: boolean;
@@ -78,7 +78,6 @@ export class EpicScroll {
   private callbacks!: {
     wheel: (e: WheelEvent) => void;
     update: () => void;
-    load: () => void;
     start: (e: MouseEvent | TouchEvent) => void;
     drag: (e: MouseEvent | TouchEvent) => void;
     stop: (e: MouseEvent | TouchEvent) => void;
@@ -98,7 +97,7 @@ export class EpicScroll {
   private startY!: number;
   private movementDeltaY!: 'up' | 'down';
 
-  constructor(container: string | HTMLElement, options: EpicScrollProps) {
+  constructor(container: string | HTMLElement, options: PanoramaProps) {
     if (container === undefined) {
       console.error('Error:', 'No container defined.');
       return;
@@ -114,7 +113,7 @@ export class EpicScroll {
       return;
     }
 
-    const defaults: Omit<EpicScrollProps, 'children'> = {
+    const defaults: Omit<PanoramaProps, 'children'> = {
       animation: 700,
       delay: 0,
       throttle: 50,
@@ -175,7 +174,7 @@ export class EpicScroll {
         page.id = clean;
       }
 
-      this.anchors.push('#' + clean);
+      // this.anchors.push("#" + clean);
       page.classList.add('pg-page');
       if (i == 0) {
         page.classList.add('pg-active');
@@ -223,7 +222,11 @@ export class EpicScroll {
       document.body.style.overflow = 'hidden';
 
       if (this.container) {
-        this.container.style.display = 'inline-block';
+        // TODO: later will check why we ned flex here
+        // this.container.style.display = "inline-block";
+
+        this.container.style.display = 'flex';
+        this.container.style.flexDirection = 'column';
       }
 
       this.pageCount = this.pages.length;
@@ -235,7 +238,6 @@ export class EpicScroll {
 
       this.bind();
       this.update();
-      this._load();
 
       const data = this._getData();
       this.config.onInit?.call(this, data);
@@ -250,54 +252,6 @@ export class EpicScroll {
         this.slider = new SlideShow(this);
         this.slider.start();
       }
-    }
-  }
-
-  private _load(): void {
-    const id = location.hash;
-
-    if (id) {
-      const index = this.anchors.indexOf(id);
-
-      if (index > -1) {
-        const offset = this.config.infinite ? 1 : 0;
-        this.scrollPosition =
-          this.data.window[this.size[this.axis]] * (index + offset);
-
-        const data = this._getData();
-
-        this.index = index;
-        this.slideIndex = index;
-
-        this.pages.forEach((page, i) => {
-          if (i === this.index) {
-            page.classList.add('pg-active');
-          } else {
-            page.classList.remove('pg-active');
-          }
-        });
-
-        this.config.onScroll?.call(this, data);
-        this.config.onFinish?.call(this, data);
-        this.emit('scroll', data);
-      }
-
-      this.update();
-    }
-  }
-
-  private _instanceof<T>(
-    left: unknown,
-    right: new (...args: unknown[]) => T,
-  ): boolean {
-    if (
-      right != null &&
-      typeof Symbol !== 'undefined' &&
-      right[Symbol.hasInstance]
-    ) {
-      return right[Symbol.hasInstance](left);
-    } else {
-      return left instanceof right;
     }
   }
 
@@ -345,7 +299,7 @@ export class EpicScroll {
 
   private update(): void {
     if (this.timer !== null) {
-      clearTimeout(this.timer);
+      clearTimeout(this.timer as number);
     }
 
     this.data = {
@@ -362,15 +316,15 @@ export class EpicScroll {
     const size = this.size[this.axis];
     const opp = this.horizontal ? this.size.y : this.size.x;
 
-    const style = this.wrapper.style as CssStyleObject;
+    const wrapperStyle = this.wrapper.style as CssStyleObject;
     const overflowProperty = `overflow-${this.axis}`;
 
-    if (overflowProperty in style) {
-      style[overflowProperty] = 'scroll';
+    if (overflowProperty in wrapperStyle) {
+      wrapperStyle[overflowProperty] = 'scroll';
     }
 
-    style[size] = `${this.data.window[size]}px`;
-    style[opp] = `${this.data.window[opp]}px`;
+    wrapperStyle[size] = `${this.data.window[size]}px`;
+    wrapperStyle[opp] = `${this.data.window[opp] + this.bar}px`;
 
     const len = this.config.infinite
       ? this.pages.length + 2
@@ -384,14 +338,13 @@ export class EpicScroll {
 
     const padding = this.horizontal ? 'padding-bottom' : 'padding-right';
 
-    style[padding] = `${this.bar}px`;
+    wrapperStyle[padding] = `${this.bar}px`;
 
     const axisProperty = this.scrollAxis[this.axis];
 
     if (typeof axisProperty === 'string') {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      this.wrapper[axisProperty] = this.index * this.data.window[size] + offset;
+      (this.wrapper as any)[axisProperty] =
+        this.index * this.data.window[size] + offset;
     }
 
     this.scrollSize = len * this.data.window[size] - this.data.window[size];
@@ -417,6 +370,16 @@ export class EpicScroll {
 
     this.config.onUpdate?.call(this, this._getData());
     this.emit('update', this._getData()); // Assuming emit is a method in Pageable
+  }
+
+  public setResponsive(activate: boolean) {
+    if (activate) {
+      this.destroy();
+    }
+
+    if (!activate) {
+      this.init();
+    }
   }
 
   public orientate(type: string) {
@@ -529,7 +492,7 @@ export class EpicScroll {
     percent: number;
     scrolled: number;
     max: number;
-    slideDirection: 'slide-up' | 'slide-down';
+    slideDirection: 'up' | 'down';
     currentPage: HTMLElement;
     upcomingPage: HTMLElement;
   } {
@@ -565,7 +528,6 @@ export class EpicScroll {
     this.callbacks = {
       wheel: this._wheel.bind(this),
       update: this.throttle(this.update.bind(this), this.config.throttle),
-      load: this._load.bind(this),
       start: this._start.bind(this),
       drag: this._drag.bind(this),
       stop: this._stop.bind(this),
@@ -576,11 +538,15 @@ export class EpicScroll {
     };
 
     document.addEventListener('keydown', this.callbacks.keydown, false);
-    window.addEventListener('resize', this.callbacks.update, false);
+    window.addEventListener(
+      'resize',
+      debounce(() => this.callbacks.update(), 150),
+      false,
+    );
 
     this.wrapper.addEventListener('wheel', (e) => {
       this.setMovementDirection(e);
-      this.handleMouseWheelNavigation.call(this, e);
+      this.callbacks.wheel.call(this, e);
     });
 
     this.wrapper.addEventListener(
@@ -596,7 +562,7 @@ export class EpicScroll {
       this.touch ? 'touchend' : 'mouseup',
       (e) => {
         this.setMovementDirection(e);
-        this.callbacks.stop.call(this, e);
+        this.callbacks?.stop?.call(this, e);
       },
       false,
     );
@@ -748,11 +714,7 @@ export class EpicScroll {
   }
 
   private getSlideMovementDirection() {
-    if (this.movementDeltaY === 'up') {
-      return 'slide-down';
-    }
-
-    return 'slide-up';
+    return this.movementDeltaY;
   }
 
   public scrollToPage(page: number) {
@@ -823,9 +785,10 @@ export class EpicScroll {
     };
 
     this.oldIndex = this.index;
+
     const diff =
       // @ts-expect-errorLater, we'll find suitable types for this section to avoid complexity due to TypeScript
-      Math.abs(evt[this.mouseAxis[this.axis]] - this.down[this.axis]) >=
+      Math.abs(evt[this.mouseAxis[this?.axis]] - this.down[this?.axis]) >=
       // @ts-expect-errorLater, we'll find suitable types for this section to avoid complexity due to TypeScript
       this.config.swipeThreshold;
 
@@ -859,10 +822,9 @@ export class EpicScroll {
     }
 
     if (this.down && !this.scrolling) {
-      // @ts-expect-errorLater, we'll find suitable types for this section to avoid complexity due to TypeScript
-      const pos = evt[this.mouseAxis[this.axis]] < this.down[this.axis];
-      // @ts-expect-errorLater, we'll find suitable types for this section to avoid complexity due to TypeScript
-      const neg = evt[this.mouseAxis[this.axis]] > this.down[this.axis];
+      const evtAny = evt as any;
+      const pos = evtAny[this.mouseAxis[this.axis]] < this.down[this.axis];
+      const neg = evtAny[this.mouseAxis[this.axis]] > this.down[this.axis];
 
       if (canChange) {
         if (this.config.infinite) {
@@ -1047,12 +1009,11 @@ export class EpicScroll {
         const scroll = () => {
           const now = Date.now();
           const ct = now - st;
-          const {animation = 0} = this.config;
 
-          if (ct > animation) {
+          if (this.config.animation && ct > this.config.animation) {
             cancelAnimationFrame(this.frame as number);
 
-            if (this.container) {
+            if (this.container && this.container.style.transform) {
               this.container.style.transform = '';
             }
 
@@ -1063,7 +1024,6 @@ export class EpicScroll {
             if (this.config.slideshow) {
               this.slider?.start();
             }
-
             if (this.config.infinite) {
               if (index === this.pageCount) {
                 this.index = 0;
@@ -1073,7 +1033,7 @@ export class EpicScroll {
             }
 
             const data = this._getData();
-            window.location.hash = this.pages[this.index].id;
+            this.pages[this.index].scrollIntoView();
 
             this.pages.forEach((page, i) => {
               if (i === this.index) {
@@ -1224,4 +1184,30 @@ export class EpicScroll {
       }
     };
   }
+}
+
+type Procedure = (...args: any[]) => void;
+
+function debounce<F extends Procedure>(
+  func: F,
+  waitMilliseconds: number,
+  immediate: boolean = false,
+): (...args: Parameters<F>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  return function (this: ThisParameterType<F>, ...args: Parameters<F>): void {
+    const context = this;
+    const later = () => {
+      timeoutId = undefined;
+      if (!immediate) func.apply(context, args);
+    };
+
+    const shouldCallNow = immediate && timeoutId === undefined;
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
+    timeoutId = setTimeout(later, waitMilliseconds);
+
+    if (shouldCallNow) {
+      func.apply(context, args);
+    }
+  };
 }
