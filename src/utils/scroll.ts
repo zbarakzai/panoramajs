@@ -3,7 +3,7 @@
  *
  * The original source has been substantially modified, and the
  * code has been completely rewritten in TypeScript and ES6,
- * by Zakiullah Barakzai on 2023.
+ * by Zakiullah Barakzai on 2024.
  *
  * Copyright (c) 2018 Karl Saunders | BSD & MIT license
  *
@@ -58,7 +58,7 @@ export class Panorama {
   private down!: {
     x: number;
     y: number;
-  } | null;
+  };
   private initialised!: boolean;
   private touch!: boolean;
   private wrapper!: HTMLDivElement;
@@ -200,7 +200,7 @@ export class Panorama {
     this.index = 0;
     this.slideIndex = 0;
     this.oldIndex = 0;
-    this.down = null;
+    this.down = {x: 0, y: 0};
     this.initialised = false;
     this.touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     this.init();
@@ -688,7 +688,7 @@ export class Panorama {
       case 'mousemove':
         if (this.startY !== null) {
           const currentY = this.getYPosition(event);
-          this.movementDeltaY = currentY > this.startY ? 'down' : 'up';
+          this.movementDeltaY = currentY > this.startY ? 'up' : 'down';
         }
         break;
 
@@ -697,9 +697,9 @@ export class Panorama {
         if (this.startY !== null) {
           const endY = this.getYPosition(event);
           if (endY > this.startY) {
-            this.movementDeltaY = 'down';
-          } else if (endY < this.startY) {
             this.movementDeltaY = 'up';
+          } else if (endY < this.startY) {
+            this.movementDeltaY = 'down';
           }
         }
         break;
@@ -817,7 +817,7 @@ export class Panorama {
 
       this._scrollBy(this._getScrollAmount(this.oldIndex) - scrolled);
 
-      this.down = null;
+      this.down = {x: 0, y: 0};
       return;
     }
 
@@ -844,7 +844,7 @@ export class Panorama {
         this._scrollBy(this._getScrollAmount(this.oldIndex));
       }
 
-      this.down = null;
+      this.down = {x: 0, y: 0};
     }
   }
 

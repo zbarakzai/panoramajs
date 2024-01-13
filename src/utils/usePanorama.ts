@@ -1,14 +1,14 @@
 import {useEffect, useState} from 'react';
-import EpicScrollManager from './panorama-manager';
+import PanormaManager from './panorama-manager';
 
 export const usePanorama = () => {
   const [scrollInstance, setScrollInstance] = useState(
-    EpicScrollManager.getInstance(),
+    PanormaManager.getInstance(),
   );
 
   useEffect(() => {
     if (!scrollInstance) {
-      const instance = EpicScrollManager.getInstance();
+      const instance = PanormaManager.getInstance();
       if (instance) {
         setScrollInstance(instance);
       }
@@ -25,7 +25,6 @@ export const usePanorama = () => {
     setResponsive: (activate: boolean) => {
       scrollInstance?.setResponsive(activate);
     },
-
     orientate: (orientation: 'vertical' | 'horizontal') => {
       scrollInstance?.orientate(orientation);
     },

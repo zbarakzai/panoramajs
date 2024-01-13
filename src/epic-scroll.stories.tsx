@@ -1,5 +1,5 @@
 import React from 'react';
-import {Panorama, usePanorama} from './index';
+import {Panorama, usePanorama, SlideData} from './index';
 
 import './style.css';
 
@@ -9,6 +9,10 @@ export default {
 
 export function Default() {
   const {next, scrollToIndex} = usePanorama();
+
+  const onStart = (data: SlideData) => {
+    console.log(data.slideDirection);
+  };
 
   return (
     <div>
@@ -38,7 +42,7 @@ export function Default() {
       >
         ToIndex 3
       </button>
-      <Panorama>
+      <Panorama onStart={onStart}>
         <section data-anchor="Page 2">
           <div className="text">Page 2</div>
         </section>

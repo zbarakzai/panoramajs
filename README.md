@@ -35,6 +35,9 @@ PanoramaJS is fully functional on all modern browsers, including Internet Explor
 A more comprehensive initialization that includes all property settings might appear as follows:
 
 ```javascript
+import { Panorama } from "panoramajs";
+import type { SlideData } from "panoramajs";
+
 <Panorama
    /** CSS3 selector string for the pages */
   childSelector="[data-anchor]"
@@ -81,6 +84,62 @@ A more comprehensive initialization that includes all property settings might ap
 #### Responsive Design and Dynamic Parallax
 
 [Demo](https://codepen.io) An example website featuring parallax effects and responsive design adjusts its height and width automatically. This functionality is easily applied through props such as `responsiveAt="small"`. In this setup, sections remain fullscreen until the responsive mode is activated. Once triggered, they adapt to the size dictated by their content, which may be larger or smaller than the viewport. Additionally, custom events like `onStart`, `onScroll`, and `onFinish` enable the implementation of the parallax effect, enriching the user experience with dynamic visual depth.
+
+Certainly! Here's a documentation snippet suitable for a README.md file, detailing the `usePanorama` React hook:
+
+---
+
+## `usePanorama` Hook
+
+The `usePanorama` hook provides a straightforward and efficient way to integrate the `Panorma` functionalities into your React application. This custom hook encapsulates key scrolling functionalities, offering an intuitive interface for managing scroll behavior in your components.
+
+### Usage
+
+First, import the hook into your component:
+
+```javascript
+import {usePanorama} from 'panoramajs';
+```
+
+Then, use the hook within your functional component to access its features:
+
+```javascript
+const MyComponent = () => {
+  const {next, prev, setResponsive, orientate, scrollToIndex} = usePanorama();
+};
+```
+
+### Provided Methods
+
+- **next**: Triggers a scroll to the next slide or section.
+
+  ```javascript
+  next();
+  ```
+
+- **prev**: Triggers a scroll to the previous slide or section.
+
+  ```javascript
+  prev();
+  ```
+
+- **setResponsive(activate: boolean)**: Enables or disables the responsive mode. `activate` is a boolean value (`true` to enable, `false` to disable).
+
+  ```javascript
+  setResponsive(true); // Enable responsive mode
+  ```
+
+- **orientate(orientation: 'vertical' | 'horizontal')**: Sets the orientation of the scroll. `orientation` can be either `'vertical'` or `'horizontal'`.
+
+  ```javascript
+  orientate('horizontal'); // Set horizontal scrolling
+  ```
+
+- **scrollToIndex(index: number)**: Scrolls to a specific slide or section based on its index.
+
+  ```javascript
+  scrollToIndex(3); // Scroll to the slide with index 3
+  ```
 
 ## Props
 

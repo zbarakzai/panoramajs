@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import EpicScrollManager from '../utils/panorama-manager';
+import PanormaManager from '../utils/panorama-manager';
 import {useMediaQuery} from '../utils/useMediaQuery';
 
 export interface PanoramaProps {
@@ -93,8 +93,8 @@ export function Panorama(props: PanoramaProps) {
   const match = useMediaQuery(props.responsiveAt);
 
   useEffect(() => {
-    EpicScrollManager.initialize({...props});
-    const instance = EpicScrollManager.getInstance();
+    PanormaManager.initialize({...props});
+    const instance = PanormaManager.getInstance();
 
     if (match && props.responsiveAt) {
       instance?.setResponsive(true);
@@ -104,7 +104,7 @@ export function Panorama(props: PanoramaProps) {
 
     return () => {
       instance?.destroy();
-      EpicScrollManager.destroy();
+      PanormaManager.destroy();
     };
   }, [match]);
 

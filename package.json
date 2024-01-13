@@ -1,6 +1,6 @@
 {
   "name": "panoramajs",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Creating captivating fullscreen snap scrolling, single-page websites with elegant landscape sliders for a seamless, immersive, and visually stunning online experience.",
   "scripts": {
     "build": "run-s clean build:types build:js",
@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zbarakzai/nebulazone.git"
+    "url": "git+https://github.com/zbarakzai/panoramajs.git"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
