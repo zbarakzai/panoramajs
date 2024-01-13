@@ -81,7 +81,6 @@ export class Panorama {
     start: (e: MouseEvent | TouchEvent) => void;
     drag: (e: MouseEvent | TouchEvent) => void;
     stop: (e: MouseEvent | TouchEvent) => void;
-    click: (e: MouseEvent) => void;
     prev: () => void;
     next: () => void;
     keydown: (e: KeyboardEvent) => void;
@@ -531,7 +530,6 @@ export class Panorama {
       start: this._start.bind(this),
       drag: this._drag.bind(this),
       stop: this._stop.bind(this),
-      click: this._click.bind(this),
       prev: this.prev.bind(this),
       next: this.next.bind(this),
       keydown: this._keydown.bind(this),
@@ -571,8 +569,6 @@ export class Panorama {
       this.setMovementDirection(e);
       this.callbacks.drag.call(this, e);
     });
-
-    document.addEventListener('click', this.callbacks.click, false);
   }
 
   private handleMouseWheelNavigation(e: WheelEvent) {
@@ -669,8 +665,6 @@ export class Panorama {
       this.callbacks.stop,
     );
     document.removeEventListener('keydown', this.callbacks.keydown);
-
-    document.removeEventListener('click', this.callbacks.click);
   }
 
   private setMovementDirection(event: WheelEvent | TouchEvent | MouseEvent) {
@@ -867,19 +861,6 @@ export class Panorama {
     }
 
     return scrolled;
-  }
-
-  private _click(e: MouseEvent) {
-    const target = e.target as HTMLElement;
-
-    if (target.closest) {
-      const anchor = target.closest('a');
-
-      if (anchor && this.anchors.indexOf(anchor.hash) > -1) {
-        e.preventDefault();
-        this.scrollToAnchor(anchor.hash);
-      }
-    }
   }
 
   public prev() {
