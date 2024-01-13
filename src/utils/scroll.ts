@@ -560,7 +560,7 @@ export class Panorama {
       this.touch ? 'touchend' : 'mouseup',
       (e) => {
         this.setMovementDirection(e);
-        this.callbacks?.stop?.call(this, e);
+        this.callbacks.stop.call(this, e);
       },
       false,
     );

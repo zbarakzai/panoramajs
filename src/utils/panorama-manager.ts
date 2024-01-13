@@ -16,7 +16,7 @@ class PanoramaManager {
 
   initialize(options: PanoramaProps) {
     if (!this.scrollInstance) {
-      this.scrollInstance = new Panorama('main', options);
+      this.scrollInstance = new Panorama('#panorama', options);
     }
   }
 

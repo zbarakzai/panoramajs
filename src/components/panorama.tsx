@@ -3,6 +3,7 @@ import PanormaManager from '../utils/panorama-manager';
 import {useMediaQuery} from '../utils/useMediaQuery';
 
 export interface PanoramaProps {
+  className?: string;
   /** CSS3 selector string for the pages */
   childSelector?: string;
   /** The duration in ms of the scroll animation */
@@ -108,5 +109,9 @@ export function Panorama(props: PanoramaProps) {
     };
   }, [match]);
 
-  return <main>{props.children}</main>;
+  return (
+    <main className={props.className} id="panorama">
+      {props.children}
+    </main>
+  );
 }
