@@ -85,8 +85,6 @@ import type { SlideData } from "panoramajs";
 
 [Demo](https://panoramajs-example.vercel.app/) An example website featuring parallax effects and responsive design adjusts its height and width automatically. This functionality is easily applied through props such as `responsiveAt="small"`. In this setup, sections remain fullscreen until the responsive mode is activated. Once triggered, they adapt to the size dictated by their content, which may be larger or smaller than the viewport. Additionally, custom events like `onStart`, `onScroll`, and `onFinish` enable the implementation of the parallax effect, enriching the user experience with dynamic visual depth.
 
-Certainly! Here's a documentation snippet suitable for a README.md file, detailing the `usePanorama` React hook:
-
 ---
 
 ## `usePanorama` Hook
