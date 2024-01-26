@@ -411,3 +411,15 @@ onFinish={(data) => {
   // Execute logic or actions that should occur after the scroll completes
 }}
 ```
+
+---
+
+## Change Log
+
+### Version 1.0.0
+
+- Migrated all functionality to a pure React component: In this major update, we've transitioned the entire scroll functionality from a traditional OOP class with direct DOM manipulation to a fully-fledged React component. This change enhances performance and leverages React's efficient DOM manipulation techniques.
+
+### Version 0.7.x
+
+- Traditional OOP Class for Scroll Functionality: Prior to version 1.0.0, the component utilized a traditional object-oriented programming (OOP) approach for handling scroll functionality, including direct manipulation of the DOM.
