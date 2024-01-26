@@ -11,11 +11,13 @@ export function Default() {
   const panoramaRef = useRef<RefFunctionType>(null);
 
   const onStart = (data: SlideData) => {
-    console.log('started', data);
+    console.log('started', data.slideYDirection);
+    // console.log('started', data);
   };
 
   const onFinish = (data: SlideData) => {
-    console.log('finished', data);
+    console.log('started', data.slideYDirection);
+    // console.log('finished', data);
   };
 
   return (

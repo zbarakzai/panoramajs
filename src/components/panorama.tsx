@@ -331,6 +331,11 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
       handleTouchStart(e);
     };
 
+    const handleKeyDownEvent = (e: KeyboardEvent) => {
+      setMovementDirection(e);
+      keydownEventHandler(e);
+    };
+
     const handleTouchStopEvent = (e: MouseEvent | TouchEvent) => {
       const target = e.target as HTMLElement;
 
@@ -348,7 +353,7 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
     };
 
     const bind = () => {
-      document.addEventListener('keydown', keydownEventHandler, false);
+      document.addEventListener('keydown', handleKeyDownEvent, false);
 
       window.addEventListener(
         'resize',
@@ -466,7 +471,6 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
         case directionOrLeftUp:
         case 'PageUp':
           e.preventDefault();
-          dispatch({type: 'SET_SCROLL_DIRECTION', payload: 'up'});
           prev();
           break;
 
@@ -475,7 +479,6 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
         case directionRightDown:
         case 'PageDown':
           e.preventDefault();
-          dispatch({type: 'SET_SCROLL_DIRECTION', payload: 'down'});
           next();
           break;
       }
@@ -565,7 +568,8 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
       if (state.scrolling) return;
 
       startScrolling();
-      executeScrollCallbacks('before');
+
+      setTimeout(() => executeScrollCallbacks('before'), 100);
 
       const timer = setupScrollTimer(amount, index);
       dispatch({type: 'SET_TIMER', payload: timer});
@@ -674,9 +678,7 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
 
       dispatch({type: 'SET_SLIDE_INDEX', payload: newIndex});
 
-      const data = getData();
-      state.config.onFinish?.(data);
-      emit('scroll.end', data);
+      setTimeout(() => executeScrollCallbacks('after'), 100);
     };
 
     const continueScrolling = (
@@ -704,7 +706,6 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
         payload: getScrollOffset()[state.axis] - scrolled,
       });
 
-      // handleInfiniteScrolling(index);
       const data = getData();
 
       if (props.infinite) {
@@ -715,8 +716,7 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
         }
       }
 
-      state.config.onScroll?.(data);
-      emit('scroll', data);
+      setTimeout(() => executeScrollCallbacks('during'), 10);
 
       dispatch({
         type: 'SET_FRAME',
@@ -763,15 +763,15 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
     };
 
     const setMovementDirection = (
-      event: WheelEvent | TouchEvent | MouseEvent,
+      event: WheelEvent | TouchEvent | MouseEvent | KeyboardEvent,
     ) => {
       let direction: 'up' | 'down' | null = null;
 
-      if (event.type === 'wheel') {
+      if (event instanceof WheelEvent) {
         direction = (event as WheelEvent).deltaY > 0 ? 'down' : 'up';
         dispatch({type: 'SET_MOVEMENT_DELTA_Y', payload: direction});
-      } else {
-        const currentY = getYPosition(event);
+      } else if (event instanceof TouchEvent || event instanceof MouseEvent) {
+        const currentY = getYPosition(event as WheelEvent);
 
         switch (event.type) {
           case 'touchstart':
@@ -793,6 +793,25 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
               direction = currentY > state.startY ? 'up' : 'down';
               dispatch({type: 'SET_MOVEMENT_DELTA_Y', payload: direction});
             }
+            break;
+        }
+      } else if (event instanceof KeyboardEvent) {
+        let code = event.key || event.code || event.keyCode;
+
+        if (event.key !== undefined) {
+          code = event.key;
+        } else if (event.code !== undefined) {
+          code = event.code;
+        }
+
+        switch (code) {
+          case KEY_PAGE_UP:
+          case 'ArrowDown':
+            dispatch({type: 'SET_MOVEMENT_DELTA_Y', payload: 'down'});
+            break;
+          case KEY_PAGE_DOWN:
+          case 'ArrowUp':
+            dispatch({type: 'SET_MOVEMENT_DELTA_Y', payload: 'up'});
             break;
         }
       }
