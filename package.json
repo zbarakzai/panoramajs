@@ -1,6 +1,6 @@
 {
   "name": "panoramajs",
-  "version": "0.7.2",
+  "version": "1.0.0",
   "description": "Creating captivating fullscreen snap scrolling, single-page websites with elegant landscape sliders for a seamless, immersive, and visually stunning online experience.",
   "scripts": {
     "build": "run-s clean build:types build:js",
