@@ -1,3 +1,2 @@
 export {Panorama} from './components/panorama';
-export {usePanorama} from './utils/usePanorama';
-export type {SlideData} from './components/panorama';
+export type {SlideData, RefFunctionType} from './dtos/panorama.types';

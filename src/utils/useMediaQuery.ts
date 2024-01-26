@@ -9,42 +9,33 @@ const defaultScreenSizes = {
   xLarge: '(min-width: 1201px)',
 };
 
-export function useIsClient() {
-  const [isClient, setIsClient] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  return isClient;
-}
-
 export function useMediaQuery(screenSize?: ScreenSize) {
-  const isClient = useIsClient();
+  if (typeof window === 'undefined') {
+    return;
+  }
 
   if (!screenSize) {
     return;
   }
 
   const query = defaultScreenSizes[screenSize];
+
   const subscribe = React.useCallback(
     (callback: (e: MediaQueryListEvent) => void) => {
-      if (!isClient) return () => {};
-
       const matchMedia = window.matchMedia(query);
       matchMedia.addEventListener('change', callback);
       return () => {
         matchMedia.removeEventListener('change', callback);
       };
     },
-    [query, isClient],
+    [query, screenSize],
   );
 
   const getSnapshot = () => {
-    return isClient && query ? window.matchMedia(query).matches : false;
+    return query ? window.matchMedia(query).matches : false;
   };
 
-  const getServerSnapshot = () => false;
+  const getServerSnapshot = () => true;
 
   return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
