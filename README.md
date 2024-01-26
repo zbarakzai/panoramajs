@@ -39,8 +39,7 @@ import { Panorama } from "panoramajs";
 import type { SlideData } from "panoramajs";
 
 <Panorama
-   /** CSS3 selector string for the pages */
-  childSelector="[data-anchor]"
+  className="pa-container"
   /** The duration in ms of the scroll animation */
   animation={1500}
   /** The delay in ms before the scroll animation starts */
@@ -87,23 +86,26 @@ import type { SlideData } from "panoramajs";
 
 ---
 
-## `usePanorama` Hook
+## `forwardRef` panoramaRef
 
-The `usePanorama` hook provides a straightforward and efficient way to integrate the `Panorma` functionalities into your React application. This custom hook encapsulates key scrolling functionalities, offering an intuitive interface for managing scroll behavior in your components.
+The `forwardRef` offers a simple and effective method for incorporating `Panorama` features into your React component. It encapsulates essential scrolling functions, providing a user-friendly interface for controlling scroll behavior within your components.
 
 ### Usage
 
 First, import the hook into your component:
 
 ```javascript
-import {usePanorama} from 'panoramajs';
+import type {RefFunctionType} from 'panoramajs';
+import {useRef} from "react"
 ```
 
 Then, use the hook within your functional component to access its features:
 
 ```javascript
 const MyComponent = () => {
-  const {next, prev, setResponsive, orientate, scrollToIndex} = usePanorama();
+  const panoramaRef = useRef < RefFunctionType > null;
+
+  return <Panorama ref={panoramaRef} {...props}></Panorama>;
 };
 ```
 
@@ -112,49 +114,34 @@ const MyComponent = () => {
 - **next**: Triggers a scroll to the next slide or section.
 
   ```javascript
-  next();
+  panoramaRef.current.next();
   ```
 
 - **prev**: Triggers a scroll to the previous slide or section.
 
   ```javascript
-  prev();
+  panoramaRef.current.prev();
   ```
 
 - **setResponsive(activate: boolean)**: Enables or disables the responsive mode. `activate` is a boolean value (`true` to enable, `false` to disable).
 
   ```javascript
-  setResponsive(true); // Enable responsive mode
+  panoramaRef.current.setResponsive(true); // Enable responsive mode
   ```
 
 - **orientate(orientation: 'vertical' | 'horizontal')**: Sets the orientation of the scroll. `orientation` can be either `'vertical'` or `'horizontal'`.
 
   ```javascript
-  orientate('horizontal'); // Set horizontal scrolling
+  panoramaRef.current.orientate('horizontal'); // Set horizontal scrolling
   ```
 
 - **scrollToIndex(index: number)**: Scrolls to a specific slide or section based on its index.
 
   ```javascript
-  scrollToIndex(3); // Scroll to the slide with index 3
+  panoramaRef.current.scrollToIndex(3); // Scroll to the slide with index 3
   ```
 
 ## Props
-
-- `childSelector`: (default `data-anchor`) This property is a CSS3 selector string used by the Panorama component to identify which child elements should have scroll snap functionality. To effectively utilize this feature, each relevant child element must be wrapped within an HTML container, such as a `<div>`. Additionally, these containers must be assigned a `data-anchor` attribute. This setup is crucial for the Panorama component to function correctly, as it relies on these selectors to apply scroll snapping. For instance, if you have multiple sections in your layout that you want to include in the scroll snap sequence, each section should be encapsulated in a `<div>` with the data-anchor attribute set, allowing Panorama to recognize and interact with these elements appropriately.
-
-Example:
-
-```javascript
-<Panorama childSelector="[data-anchor]" animation={1500}>
-  <section data-anchor="Page 2">
-    <div className="text">Page 2</div>
-  </section>
-  <section data-anchor="Page 3">
-    <div className="text">Page 3</div>
-  </section>
-</Panorama>
-```
 
 - `animation`: (default `700`) This parameter specifies the duration of scrolling transitions in milliseconds. It determines how quickly or slowly the scroll animation occurs when scroll snap between sections. A smaller value results in a faster transition, while a larger value slows down the effect. For example, setting `animation={300}` will result in a swift, smooth scroll, whereas `scrollSpeed={1000}` will create a more gradual, leisurely scrolling experience.
 
@@ -174,7 +161,7 @@ Example:
 
 For instance, setting `responsiveAt="small"` means that the responsive behavior will kick in at small-sized viewports, typically suitable for mobile devices. As you switch to `'medium'`, `'large'`, or `'xLarge'`, the responsive mode activates at increasingly larger viewport widths, catering to tablets, desktops, and larger screens, respectively.
 
-- `slideshow`: (optional) `SlideshowConfig` This feature enables an automatic slideshow that cycles through your pages. When implemented, it transitions between pages without user input, creating a dynamic, auto-advancing experience. The behavior of the slideshow is defined by the `SlideshowConfig`, which includes the following properties:
+- `slideshow`: (Not supported as of version 1.0) `SlideshowConfig` This feature enables an automatic slideshow that cycles through your pages. When implemented, it transitions between pages without user input, creating a dynamic, auto-advancing experience. The behavior of the slideshow is defined by the `SlideshowConfig`, which includes the following properties:
 
   - `interval`: Specifies the time in milliseconds between each page change.
   - `delay`: Defines the delay in milliseconds that occurs after the interval has ended and before the page actually changes.
@@ -185,6 +172,21 @@ For instance, setting `responsiveAt="small"` means that the responsive behavior 
   - `mouse`: This option controls mouse drag scrolling.
   - `touch`: This property toggles touch or swipe-based scrolling, essential for mobile and touch-enabled devices.
   - `keydown`: This setting enables or disables navigation via keyboard input.
+
+  - `childSelector` (Deprecated after version 1.0): (default `data-anchor`) **[Deprecated]** (There's no longer a requirement to add the data-anchor attribute to child elements.) This property is a CSS3 selector string used by the Panorama component to identify which child elements should have scroll snap functionality. To effectively utilize this feature, each relevant child element must be wrapped within an HTML container, such as a `<div>`. Additionally, these containers must be assigned a `data-anchor` attribute. This setup is crucial for the Panorama component to function correctly, as it relies on these selectors to apply scroll snapping. For instance, if you have multiple sections in your layout that you want to include in the scroll snap sequence, each section should be encapsulated in a `<div>` with the data-anchor attribute set, allowing Panorama to recognize and interact with these elements appropriately.
+
+Example:
+
+```javascript
+<Panorama childSelector="[data-anchor]" animation={1500}>
+  <section data-anchor="Page 2">
+    <div className="text">Page 2</div>
+  </section>
+  <section data-anchor="Page 3">
+    <div className="text">Page 3</div>
+  </section>
+</Panorama>
+```
 
 ## Methods
 

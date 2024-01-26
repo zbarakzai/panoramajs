@@ -5,8 +5,6 @@ export type OverflowType = 'overflow-x' | 'overflow-y';
 
 export interface PanoramaProps {
   className?: string;
-  /** CSS3 selector string for the pages */
-  childSelector?: string;
   /** The duration in ms of the scroll animation */
   animation?: number;
   /** The delay in ms before the scroll animation starts */
@@ -27,8 +25,6 @@ export interface PanoramaProps {
   anchors?: string[];
   /** Represents the child components or elements to be rendered inside this component. */
   children: React.ReactNode;
-  /** Enable slideshow that cycles through your pages automatically */
-  slideshow?: SlideshowConfig;
   /**  Configuration object for enabling or disabling various event-driven features. */
   events?: EventsConfig;
   /** Specifies the easing function to be used for transitions and animations. */
@@ -72,13 +68,6 @@ type EasingFunction = (
   /** Total time duration of the animation */
   interval: number,
 ) => number; // Returns the calculated position value based on the easing function
-
-type SlideshowConfig = {
-  /** Time in ms between page change */
-  interval: number;
-  /** Delay in ms after the interval has ended and before changing page */
-  delay: number;
-};
 
 type EventsConfig = {
   /** enable / disable mousewheel scrolling */
