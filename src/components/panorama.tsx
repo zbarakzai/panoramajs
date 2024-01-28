@@ -85,7 +85,7 @@ export const Panorama = forwardRef<RefFunctionType, PanoramaProps>(
     useBodyStyle({
       margin: '0',
       padding: '0',
-      overflow: 'hidden',
+      overflow: match ? 'visible' : 'hidden',
     });
 
     useImperativeHandle(ref, () => ({

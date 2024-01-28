@@ -16,6 +16,27 @@ body {
   margin: 0;
 }
 
+.page-1,
+.page-1-clone {
+  height: 100vh;
+}
+.page-2 {
+  height: 100vh;
+}
+.page-3 {
+  height: 100vh;
+}
+.page-4 {
+  height: 100vh;
+}
+.page-5 {
+  height: 100vh;
+}
+.page-6,
+.page-6-clone {
+  height: 100vh;
+}
+
 .page-1 .text,
 .page-1-clone .text {
   background-color: #3f51b5;

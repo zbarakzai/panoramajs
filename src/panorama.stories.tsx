@@ -64,6 +64,7 @@ export function Default() {
       <Panorama
         ref={panoramaRef}
         // infinite={true}
+        responsiveAt="small"
         onStart={onStart}
         onFinish={onFinish}
       >
